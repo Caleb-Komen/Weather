@@ -6,8 +6,9 @@ import com.techdroidcentre.weather.core.model.Weather
 import com.techdroidcentre.weather.data.network.mapper.toModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class DefaultWeatherRepository(
+class DefaultWeatherRepository @Inject constructor(
     private val apiService: WeatherApiService
 ): WeatherRepository {
     override fun getWeatherData(
