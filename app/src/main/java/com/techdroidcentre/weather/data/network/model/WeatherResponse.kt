@@ -21,9 +21,9 @@ data class CurrentWeatherResponse(
     val feelsLike: Float,
     val humidity: Int,
     @SerialName("wind_speed")
-    val windSpeed: Int,
+    val windSpeed: Float,
     @SerialName("weather")
-    val weatherInfoResponse: WeatherInfoResponse
+    val weatherInfoResponse: List<WeatherInfoResponse>
 )
 
 @Serializable
@@ -33,15 +33,17 @@ data class HourlyWeatherResponse(
     @SerialName("temp")
     val temperature: Float,
     @SerialName("weather")
-    val weatherInfoResponse: WeatherInfoResponse
+    val weatherInfoResponse: List<WeatherInfoResponse>
 )
 
 @Serializable
 data class DailyWeatherResponse(
+    @SerialName("dt")
+    val time: Long,
     @SerialName("temp")
     val temperatureInfoResponse: TemperatureInfoResponse,
     @SerialName("weather")
-    val weatherInfoResponse: WeatherInfoResponse
+    val weatherInfoResponse: List<WeatherInfoResponse>
 )
 
 @Serializable

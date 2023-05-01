@@ -12,6 +12,11 @@ import com.techdroidcentre.weather.data.network.model.HourlyWeatherResponse
 import com.techdroidcentre.weather.data.network.model.TemperatureInfoResponse
 import com.techdroidcentre.weather.data.network.model.WeatherInfoResponse
 import com.techdroidcentre.weather.data.network.model.WeatherResponse
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+const val ICON_URL = "https://openweathermap.org/img/wn/"
 
 fun WeatherResponse.toModel(): Weather {
     return Weather(
@@ -27,29 +32,41 @@ fun CurrentWeatherResponse.toModel(): CurrentWeather {
         feelsLike = feelsLike,
         humidity = humidity,
         windSpeed = windSpeed,
-        weatherInfo = weatherInfoResponse.toModel()
+        weatherInfo = weatherInfoResponse.map { it.toModel() }
     )
 }
 
 fun HourlyWeatherResponse.toModel(): HourlyWeather {
     return HourlyWeather(
-        time = time,
+        time = formatDate(time, "HH:mm"),
         temperature = temperature,
-        weatherInfo = weatherInfoResponse.toModel()
+        weatherInfo = weatherInfoResponse.map { it.toModel() }
     )
 }
 
 fun DailyWeatherResponse.toModel(): DailyWeather {
     return DailyWeather(
+        time = formatDate(time, "E"),
         temperatureInfo = temperatureInfoResponse.toModel(),
-        weatherInfo = weatherInfoResponse.toModel()
+        weatherInfo = weatherInfoResponse.map { it.toModel() }
     )
 }
 
 fun WeatherInfoResponse.toModel(): WeatherInfo {
-    return WeatherInfo(id, main, description, icon)
+    return WeatherInfo(
+        id = id,
+        main = main,
+        description = description,
+        icon = "$ICON_URL$icon@2x.png"
+    )
 }
 
 fun TemperatureInfoResponse.toModel(): TemperatureInfo {
     return TemperatureInfo(min, max)
+}
+
+fun formatDate(millis: Long, pattern: String): String {
+    val date = Date(millis * 1000)
+    val sdf = SimpleDateFormat(pattern, Locale.getDefault())
+    return sdf.format(date)
 }

@@ -1,6 +1,8 @@
 package com.techdroidcentre.weather.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.techdroidcentre.weather.core.WeatherRepository
+import com.techdroidcentre.weather.data.network.DefaultWeatherRepository
 import com.techdroidcentre.weather.data.network.WeatherApiService
 import dagger.Module
 import dagger.Provides
@@ -26,10 +28,18 @@ object MainModule {
             .addInterceptor(logging)
             .build()
         return Retrofit.Builder()
-            .baseUrl("")
+            .baseUrl("https://api.openweathermap.org")
             .client(client)
-            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+            .addConverterFactory(Json{ ignoreUnknownKeys = true }.asConverterFactory("application/json".toMediaType()))
             .build()
             .create(WeatherApiService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideWeatherRepository(
+        weatherApiService: WeatherApiService
+    ): WeatherRepository {
+        return DefaultWeatherRepository(weatherApiService)
     }
 }
