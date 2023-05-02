@@ -7,16 +7,16 @@ data class Weather(
 )
 
 data class CurrentWeather(
-    val temperature: Float,
-    val feelsLike: Float,
-    val humidity: Int,
-    val windSpeed: Float,
+    val temperature: String,
+    val feelsLike: String,
+    val humidity: String,
+    val windSpeed: String,
     val weatherInfo: List<WeatherInfo>
 )
 
 data class HourlyWeather(
     val time: String,
-    val temperature: Float,
+    val temperature: String,
     val weatherInfo: List<WeatherInfo>
 )
 
@@ -34,6 +34,6 @@ data class WeatherInfo(
 )
 
 data class TemperatureInfo(
-    val min: Float,
-    val max: Float,
+    val min: String,
+    val max: String,
 )

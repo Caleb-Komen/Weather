@@ -151,7 +151,7 @@ fun CurrentWeatherCard(
                 )
                 Spacer(Modifier.width(16.dp))
                 Text(
-                    text = "${currentWeather.temperature}",
+                    text = currentWeather.temperature,
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold
                 )
@@ -163,7 +163,7 @@ fun CurrentWeatherCard(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Humidity: ${currentWeather.humidity}%",
+                        text = "Humidity: ${currentWeather.humidity}",
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Spacer(modifier = Modifier.height(4.dp))
@@ -222,7 +222,7 @@ fun HourlyWeatherItem(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "${hourlyWeather.temperature}"
+                text = hourlyWeather.temperature
             )
         }
     }
@@ -270,12 +270,12 @@ fun DailyWeatherItem(
                 .size(48.dp)
         )
         Text(
-            text = "${dailyWeather.temperatureInfo.min}",
+            text = dailyWeather.temperatureInfo.min,
             modifier = Modifier.weight(2f),
             textAlign = TextAlign.Center
         )
         Text(
-            text = "${dailyWeather.temperatureInfo.max}",
+            text = dailyWeather.temperatureInfo.max,
             modifier = Modifier.weight(2f),
             textAlign = TextAlign.Center
         )
@@ -286,16 +286,16 @@ fun DailyWeatherItem(
 @Composable
 fun WeatherScreenPreview() {
     val weatherInfo = WeatherInfo(1, "Rain", "Light rains", "icon")
-    val currentWeather = CurrentWeather(23.3f, 24.0f, 78, 23f, listOf(weatherInfo))
+    val currentWeather = CurrentWeather("23.3", "24.0", "78", "23", listOf(weatherInfo))
     val hourlyWeather = listOf(
-        HourlyWeather("08:00", 24.0f, listOf(weatherInfo)),
-        HourlyWeather("09:00", 23.78f, listOf(weatherInfo)),
-        HourlyWeather("10:00", 23.98f, listOf(weatherInfo))
+        HourlyWeather("08:00", "24.0", listOf(weatherInfo)),
+        HourlyWeather("09:00", "23.78", listOf(weatherInfo)),
+        HourlyWeather("10:00", "23.98", listOf(weatherInfo))
     )
     val dailyWeather = listOf(
-        DailyWeather("Mon",TemperatureInfo(23.45f, 24.75f), listOf(weatherInfo)),
-        DailyWeather("Tue", TemperatureInfo(21.3f, 22.01f), listOf(weatherInfo)),
-        DailyWeather("Wed", TemperatureInfo(22.4f, 23.56f), listOf(weatherInfo))
+        DailyWeather("Mon",TemperatureInfo("23.45", "24.75"), listOf(weatherInfo)),
+        DailyWeather("Tue", TemperatureInfo("21.3", "22.01"), listOf(weatherInfo)),
+        DailyWeather("Wed", TemperatureInfo("22.4", "23.56"), listOf(weatherInfo))
     )
     WeatherTheme {
         WeatherScreen(
