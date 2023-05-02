@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -89,9 +90,8 @@ fun WeatherScreen(
         contentAlignment = Alignment.Center
     ) {
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(vertical = 16.dp)
         ) {
             item {
                 uiState.weather?.currentWeather?.let { currentWeather->
@@ -127,6 +127,8 @@ fun CurrentWeatherCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             Text(
@@ -168,11 +170,20 @@ fun CurrentWeatherCard(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Wind Speed: ${currentWeather.windSpeed}",
+                        text = "Wind speed: ${currentWeather.windSpeed}",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = currentWeather.weatherInfo.first().main,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = currentWeather.weatherInfo.first().description
+            )
         }
     }
 }
@@ -186,7 +197,7 @@ fun HourlyWeatherCollection(
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(top = 8.dp, bottom = 16.dp)
+        contentPadding = PaddingValues(16.dp)
     ) {
         itemsIndexed(items = hourlyWeather.take(12)) { index, weather ->
             HourlyWeatherItem(hourlyWeather = weather)
@@ -235,7 +246,8 @@ fun LazyListScope.dailyWeatherCollection(
         Text(
             text = "Forecast for next days",
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+                .padding(horizontal = 16.dp),
             textAlign = TextAlign.Center
         )
     }
@@ -251,7 +263,7 @@ fun DailyWeatherItem(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.padding(vertical = 8.dp),
+        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
