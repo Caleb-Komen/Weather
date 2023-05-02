@@ -4,6 +4,20 @@ import com.techdroidcentre.weather.core.model.Weather
 
 data class WeatherScreenUiState(
     val weather: Weather? = null,
+    val location: DefaultLocation = DefaultLocation(-1.29f, 36.87f),
     val error: String = "",
-    val isLoading: Boolean = false
+    val units: String = "",
+    val isLoading: Boolean = false,
+    val weatherUnitsDialogState: UIComponentState = UIComponentState.Hide,
 )
+
+data class DefaultLocation(
+    val latitude: Float,
+    val longitude: Float
+)
+
+sealed class UIComponentState {
+    object Show: UIComponentState()
+
+    object Hide: UIComponentState()
+}

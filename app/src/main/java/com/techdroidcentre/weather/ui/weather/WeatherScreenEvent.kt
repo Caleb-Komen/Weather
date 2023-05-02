@@ -5,4 +5,10 @@ sealed interface WeatherScreenEvent{
         val latitude: Float,
         val longitude: Float
     ): WeatherScreenEvent
+
+    data class UpdateWeatherUnitsDialogState(
+        val uiComponentState: UIComponentState
+    ): WeatherScreenEvent
+
+    data class UpdateUnits(val units: String): WeatherScreenEvent
 }

@@ -46,17 +46,37 @@ import com.techdroidcentre.weather.core.model.TemperatureInfo
 import com.techdroidcentre.weather.core.model.Weather
 import com.techdroidcentre.weather.core.model.WeatherInfo
 import com.techdroidcentre.weather.ui.theme.WeatherTheme
+import com.techdroidcentre.weather.ui.weather.components.WeatherUnitsDialog
 
 @Composable
 fun WeatherScreen(
-    modifier: Modifier = Modifier,
-    viewModel: WeatherScreenViewModel = viewModel()
+    viewModel: WeatherScreenViewModel,
+    modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    viewModel.processEvent(
+        WeatherScreenEvent.GetWeatherData(
+            uiState.location.latitude,
+            uiState.location.longitude
+        )
+    )
     WeatherScreen(
         uiState = uiState,
         modifier = modifier
     )
+    if (uiState.weatherUnitsDialogState is UIComponentState.Show) {
+        WeatherUnitsDialog(
+            units = uiState.units,
+            onSubmitOption = {
+                viewModel.processEvent(WeatherScreenEvent.UpdateUnits(it))
+            },
+            onCloseDialog = {
+                viewModel.processEvent(WeatherScreenEvent.UpdateWeatherUnitsDialogState(
+                    UIComponentState.Hide
+                ))
+            }
+        )
+    }
 }
 
 @Composable
