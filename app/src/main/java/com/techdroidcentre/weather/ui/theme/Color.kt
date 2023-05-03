@@ -3,7 +3,7 @@ package com.techdroidcentre.weather.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val lightPrimary = Color(0xFF525151)
-val lightOnPrimary = Color(0xFF000000)
+val lightOnPrimary = Color(0xFFFFFFFF)
 val lightSecondary = Color(0xFF3BF8CC)
 val lightOnSecondary = Color(0xFF000000)
 val lightTertiary = Color(0xFFB6F1E4)

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -39,13 +38,13 @@ fun WeatherUnitsDialog(
         var selectedOption by remember { mutableStateOf(units) }
 
         Box(
-            modifier = modifier.padding(24.dp)
+            modifier = modifier
                 .background(color = MaterialTheme.colorScheme.surface, shape = MaterialTheme.shapes.medium)
         ) {
             Column(modifier = Modifier.padding(24.dp)) {
                 Text(
                     text = "Choose Unit of measurement",
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 radioOptions.forEach { option ->

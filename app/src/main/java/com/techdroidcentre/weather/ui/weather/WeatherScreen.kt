@@ -36,7 +36,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.techdroidcentre.weather.R
@@ -188,13 +187,14 @@ fun HourlyWeatherCollection(
     hourlyWeather: List<HourlyWeather>,
     modifier: Modifier = Modifier
 ) {
-    val lastIndex = hourlyWeather.size - 1
+    val hWeather = hourlyWeather.take(12)
+    val lastIndex = hWeather.size - 1
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.fillMaxWidth(),
         contentPadding = PaddingValues(16.dp)
     ) {
-        itemsIndexed(items = hourlyWeather.take(12)) { index, weather ->
+        itemsIndexed(items = hWeather) { index, weather ->
             HourlyWeatherItem(hourlyWeather = weather)
             if (index < lastIndex) Spacer(Modifier.width(8.dp))
         }
