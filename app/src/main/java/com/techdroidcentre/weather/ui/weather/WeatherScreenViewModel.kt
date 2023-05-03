@@ -26,9 +26,9 @@ class WeatherScreenViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(units = units)
                 }
+                processEvent(WeatherScreenEvent.GetWeatherData(-1.29f, 36.87f))
             }
         }
-        processEvent(WeatherScreenEvent.GetWeatherData(-1.29f, 36.87f))
     }
 
     fun processEvent(event: WeatherScreenEvent) {

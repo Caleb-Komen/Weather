@@ -55,12 +55,7 @@ fun WeatherScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    viewModel.processEvent(
-        WeatherScreenEvent.GetWeatherData(
-            uiState.location.latitude,
-            uiState.location.longitude
-        )
-    )
+
     WeatherScreen(
         uiState = uiState,
         modifier = modifier
