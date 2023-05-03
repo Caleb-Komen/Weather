@@ -4,6 +4,7 @@ import com.google.common.truth.Truth
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.techdroidcentre.weather.core.Result
 import com.techdroidcentre.weather.core.WeatherRepository
+import com.techdroidcentre.weather.data.DefaultWeatherRepository
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType

@@ -5,7 +5,7 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import com.techdroidcentre.weather.core.SettingsRepository
 import com.techdroidcentre.weather.core.WeatherRepository
 import com.techdroidcentre.weather.data.DefaultSettingsRepository
-import com.techdroidcentre.weather.data.network.DefaultWeatherRepository
+import com.techdroidcentre.weather.data.DefaultWeatherRepository
 import com.techdroidcentre.weather.data.network.WeatherApiService
 import dagger.Module
 import dagger.Provides

@@ -1,9 +1,10 @@
-package com.techdroidcentre.weather.data.network
+package com.techdroidcentre.weather.data
 
 import com.techdroidcentre.weather.core.Result
 import com.techdroidcentre.weather.core.WeatherRepository
 import com.techdroidcentre.weather.core.model.Units
 import com.techdroidcentre.weather.core.model.Weather
+import com.techdroidcentre.weather.data.network.WeatherApiService
 import com.techdroidcentre.weather.data.network.mapper.toModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
