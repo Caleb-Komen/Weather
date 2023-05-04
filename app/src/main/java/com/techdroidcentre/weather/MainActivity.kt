@@ -1,9 +1,11 @@
 package com.techdroidcentre.weather
 
 import android.Manifest
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,6 +19,7 @@ import com.techdroidcentre.weather.ui.WeatherApp
 import com.techdroidcentre.weather.ui.theme.WeatherTheme
 import com.techdroidcentre.weather.util.PermissionAction
 import com.techdroidcentre.weather.util.PermissionDialog
+import com.techdroidcentre.weather.util.createLocationRequest
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalMaterial3Api
@@ -24,7 +27,20 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val viewModel: MainViewModel by viewModels()
+
+        val locationRequestLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                viewModel.setLocationEnabled(true)
+            } else {
+                viewModel.setLocationEnabled(false)
+            }
+        }
+
+        createLocationRequest(this, locationRequestLauncher) {
+            viewModel.setLocationEnabled(true)
+        }
 
         setContent {
             val state by viewModel.uiState.collectAsState()
@@ -41,15 +57,15 @@ class MainActivity : ComponentActivity() {
                     ) { permissionAction ->
                         when (permissionAction) {
                             PermissionAction.PermissionGranted -> {
-                                viewModel.setPermission(true)
+                                viewModel.setPermissionGranted(true)
                             }
                             PermissionAction.PermissionDenied -> {
-                                viewModel.setPermission(false)
+                                viewModel.setPermissionGranted(false)
                             }
                         }
                     }
 
-                    if (state.isPermissionGranted) {
+                    if (state.isPermissionGranted && state.isLocationEnabled) {
                         WeatherApp()
                     }
                 }
