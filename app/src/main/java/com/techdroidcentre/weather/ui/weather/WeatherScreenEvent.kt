@@ -11,4 +11,6 @@ sealed interface WeatherScreenEvent{
     ): WeatherScreenEvent
 
     data class UpdateUnits(val units: String): WeatherScreenEvent
+
+    object RemoveHeadFromQueue: WeatherScreenEvent
 }
