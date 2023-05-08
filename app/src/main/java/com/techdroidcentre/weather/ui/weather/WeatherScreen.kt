@@ -43,9 +43,12 @@ import com.techdroidcentre.weather.core.model.CurrentWeather
 import com.techdroidcentre.weather.core.model.DailyWeather
 import com.techdroidcentre.weather.core.model.HourlyWeather
 import com.techdroidcentre.weather.core.model.TemperatureInfo
+import com.techdroidcentre.weather.core.model.UIComponent
 import com.techdroidcentre.weather.core.model.Weather
 import com.techdroidcentre.weather.core.model.WeatherInfo
 import com.techdroidcentre.weather.ui.theme.WeatherTheme
+import com.techdroidcentre.weather.ui.weather.components.Banner
+import com.techdroidcentre.weather.ui.weather.components.GenericDialog
 import com.techdroidcentre.weather.ui.weather.components.WeatherUnitsDialog
 
 @Composable
@@ -57,26 +60,15 @@ fun WeatherScreen(
 
     WeatherScreen(
         uiState = uiState,
+        event = viewModel::processEvent,
         modifier = modifier
     )
-    if (uiState.weatherUnitsDialogState is UIComponentState.Show) {
-        WeatherUnitsDialog(
-            units = uiState.units,
-            onSubmitOption = {
-                viewModel.processEvent(WeatherScreenEvent.UpdateUnits(it))
-            },
-            onCloseDialog = {
-                viewModel.processEvent(WeatherScreenEvent.UpdateWeatherUnitsDialogState(
-                    UIComponentState.Hide
-                ))
-            }
-        )
-    }
 }
 
 @Composable
 fun WeatherScreen(
     uiState: WeatherScreenUiState,
+    event: (WeatherScreenEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -101,11 +93,41 @@ fun WeatherScreen(
                 dailyWeatherCollection(dailyWeather = dailyWeather)
             }
         }
-        if (uiState.error.isNotEmpty()) {
-            Text(
-                text = uiState.error,
-                style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center
+        if (!uiState.errorQueue.isEmpty()) {
+            uiState.errorQueue.peek()?.let {uiComponent ->
+                when (uiComponent) {
+                    is UIComponent.Banner -> {
+                        Banner(
+                            description = uiComponent.description,
+                            onRetry = {
+                                event(WeatherScreenEvent.RemoveHeadFromQueue)
+                                event(WeatherScreenEvent.GetWeatherData(-1.29f, 36.87f))
+                            },
+                            onCancel = { event(WeatherScreenEvent.RemoveHeadFromQueue) },
+                            modifier = Modifier.align(Alignment.TopCenter)
+                        )
+                    }
+                    is UIComponent.Dialog -> {
+                        GenericDialog(
+                            title = uiComponent.title,
+                            description = uiComponent.description,
+                            onCloseDialog = { event(WeatherScreenEvent.RemoveHeadFromQueue) }
+                        )
+                    }
+                }
+            }
+        }
+        if (uiState.weatherUnitsDialogState is UIComponentState.Show) {
+            WeatherUnitsDialog(
+                units = uiState.units,
+                onSubmitOption = {
+                    event(WeatherScreenEvent.UpdateUnits(it))
+                },
+                onCloseDialog = {
+                    event(WeatherScreenEvent.UpdateWeatherUnitsDialogState(
+                        UIComponentState.Hide
+                    ))
+                }
             )
         }
         if (uiState.isLoading) {
@@ -120,7 +142,8 @@ fun CurrentWeatherCard(
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
             .padding(horizontal = 16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
@@ -241,7 +264,8 @@ fun LazyListScope.dailyWeatherCollection(
         Text(
             text = "Forecast for next days",
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             textAlign = TextAlign.Center
         )
@@ -308,7 +332,7 @@ fun WeatherScreenPreview() {
         WeatherScreen(
             WeatherScreenUiState(
                 weather = Weather(currentWeather, hourlyWeather, dailyWeather)
-            )
+            ), {}
         )
     }
 }

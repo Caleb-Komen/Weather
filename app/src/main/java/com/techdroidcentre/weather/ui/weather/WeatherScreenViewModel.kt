@@ -1,15 +1,18 @@
 package com.techdroidcentre.weather.ui.weather
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techdroidcentre.weather.core.Result
 import com.techdroidcentre.weather.core.SettingsRepository
+import com.techdroidcentre.weather.core.model.UIComponent
 import com.techdroidcentre.weather.core.usecases.GetWeatherDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.concurrent.LinkedBlockingQueue
 import javax.inject.Inject
 
 @HiltViewModel
@@ -51,6 +54,8 @@ class WeatherScreenViewModel @Inject constructor(
                     settingsRepository.setUnits(event.units)
                 }
             }
+
+            WeatherScreenEvent.RemoveHeadFromQueue -> removeHeadMessage()
         }
     }
 
@@ -60,13 +65,43 @@ class WeatherScreenViewModel @Inject constructor(
             getWeatherDataUseCase(latitude, longitude, _uiState.value.units).collect { result ->
                 when (result) {
                     is Result.Success -> {
-                        _uiState.value = _uiState.value.copy(weather = result.data, error = "", isLoading = false)
+                        _uiState.update {
+                            it.copy(weather = result.data, isLoading = false)
+                        }
                     }
                     is Result.Error -> {
-                        _uiState.value = _uiState.value.copy(error = result.message, isLoading = false)
+                        appendToMessageQueue(result.uiComponent)
                     }
                 }
             }
         }
+    }
+
+    private fun appendToMessageQueue(uiComponent: UIComponent) {
+        try {
+            val queue = LinkedBlockingQueue(_uiState.value.errorQueue)
+            queue.add(uiComponent)
+            _uiState.update {
+                it.copy(errorQueue = queue, isLoading = false)
+            }
+        } catch (ex: Exception) {
+            Log.d(TAG, "No more space is currently available.")
+        }
+    }
+
+    private fun removeHeadMessage() {
+        try {
+            val queue = LinkedBlockingQueue(_uiState.value.errorQueue)
+            queue.remove()
+            _uiState.update {
+                it.copy(errorQueue = queue)
+            }
+        } catch (ex: Exception) {
+            Log.d(TAG, "No more elements to remove from queue.")
+        }
+    }
+
+    companion object {
+        const val TAG = "WeatherScreenViewModel"
     }
 }
