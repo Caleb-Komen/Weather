@@ -3,4 +3,4 @@ This is a sample android app that uses location services to get current weather 
 The app is not complete yet.
 
 ## Screenshots
-<img src="screenshots/weather_light" width=250> &nbsp; <img src="screenshots/weather_dark" width=250>
+<img src="screenshots/weather_light.png" width=250> &nbsp; <img src="screenshots/weather_dark.png" width=250>
