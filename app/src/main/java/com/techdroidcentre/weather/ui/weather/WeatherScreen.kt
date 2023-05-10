@@ -26,8 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -44,26 +42,13 @@ import com.techdroidcentre.weather.core.model.DailyWeather
 import com.techdroidcentre.weather.core.model.HourlyWeather
 import com.techdroidcentre.weather.core.model.TemperatureInfo
 import com.techdroidcentre.weather.core.model.UIComponent
+import com.techdroidcentre.weather.core.model.UIComponentState
 import com.techdroidcentre.weather.core.model.Weather
 import com.techdroidcentre.weather.core.model.WeatherInfo
 import com.techdroidcentre.weather.ui.theme.WeatherTheme
 import com.techdroidcentre.weather.ui.weather.components.Banner
 import com.techdroidcentre.weather.ui.weather.components.GenericDialog
 import com.techdroidcentre.weather.ui.weather.components.WeatherUnitsDialog
-
-@Composable
-fun WeatherScreen(
-    viewModel: WeatherScreenViewModel,
-    modifier: Modifier = Modifier
-) {
-    val uiState by viewModel.uiState.collectAsState()
-
-    WeatherScreen(
-        uiState = uiState,
-        event = viewModel::processEvent,
-        modifier = modifier
-    )
-}
 
 @Composable
 fun WeatherScreen(
@@ -101,7 +86,7 @@ fun WeatherScreen(
                             description = uiComponent.description,
                             onRetry = {
                                 event(WeatherScreenEvent.RemoveHeadFromQueue)
-                                event(WeatherScreenEvent.GetWeatherData(-1.29f, 36.87f))
+                                event(WeatherScreenEvent.GetWeatherData)
                             },
                             onCancel = { event(WeatherScreenEvent.RemoveHeadFromQueue) },
                             modifier = Modifier.align(Alignment.TopCenter)

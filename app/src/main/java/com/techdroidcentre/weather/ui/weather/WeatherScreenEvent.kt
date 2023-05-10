@@ -1,10 +1,9 @@
 package com.techdroidcentre.weather.ui.weather
 
+import com.techdroidcentre.weather.core.model.UIComponentState
+
 sealed interface WeatherScreenEvent{
-    data class GetWeatherData(
-        val latitude: Float,
-        val longitude: Float
-    ): WeatherScreenEvent
+    object GetWeatherData: WeatherScreenEvent
 
     data class UpdateWeatherUnitsDialogState(
         val uiComponentState: UIComponentState

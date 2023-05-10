@@ -1,6 +1,7 @@
 package com.techdroidcentre.weather
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -15,6 +16,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.techdroidcentre.weather.core.model.DefaultLocation
 import com.techdroidcentre.weather.ui.WeatherApp
 import com.techdroidcentre.weather.ui.theme.WeatherTheme
 import com.techdroidcentre.weather.util.PermissionAction
@@ -25,10 +29,14 @@ import dagger.hilt.android.AndroidEntryPoint
 @ExperimentalMaterial3Api
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: MainViewModel by viewModels()
+
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
+    @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val viewModel: MainViewModel by viewModels()
 
         val locationRequestLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -41,6 +49,8 @@ class MainActivity : ComponentActivity() {
         createLocationRequest(this, locationRequestLauncher) {
             viewModel.setLocationEnabled(true)
         }
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         setContent {
             val state by viewModel.uiState.collectAsState()
@@ -66,6 +76,14 @@ class MainActivity : ComponentActivity() {
                     }
 
                     if (state.isPermissionGranted && state.isLocationEnabled) {
+                        fusedLocationProviderClient.lastLocation.addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                task.result?.let {
+                                    viewModel.setDefaultLocation(DefaultLocation(it.latitude.toFloat(), it.longitude.toFloat()))
+                                }
+                            }
+                        }
+
                         WeatherApp()
                     }
                 }
