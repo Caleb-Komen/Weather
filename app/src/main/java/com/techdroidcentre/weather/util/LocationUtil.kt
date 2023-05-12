@@ -1,6 +1,10 @@
 package com.techdroidcentre.weather.util
 
 import android.app.Activity
+import android.content.Context
+import android.location.Address
+import android.location.Geocoder
+import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import com.google.android.gms.common.api.ApiException
@@ -10,6 +14,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.location.Priority
+import java.util.Locale
 
 fun createLocationRequest(
     activity: Activity,
@@ -42,9 +47,26 @@ fun createLocationRequest(
                     locationRequestLauncher.launch(intentSender)
                 }
                 LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-                    // Do nothing, location settings can't be changed
+                    // No op
                 }
             }
+        }
+    }
+}
+
+fun Context.getLocationName(longitude: Double, latitude: Double, onAddressReceived: (Address) -> Unit) {
+    val geoCoder = Geocoder(this, Locale.getDefault())
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        geoCoder.getFromLocation(latitude, longitude, 1) { addresses ->
+            if (addresses.isNotEmpty()) {
+                onAddressReceived(addresses[0])
+            }
+        }
+    } else {
+        val addresses = geoCoder.getFromLocation(latitude, longitude, 1)
+        if (addresses?.isNotEmpty() == true) {
+            onAddressReceived(addresses[0])
         }
     }
 }

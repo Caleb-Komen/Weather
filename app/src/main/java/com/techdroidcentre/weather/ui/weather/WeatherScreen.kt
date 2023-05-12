@@ -49,6 +49,7 @@ import com.techdroidcentre.weather.ui.theme.WeatherTheme
 import com.techdroidcentre.weather.ui.weather.components.Banner
 import com.techdroidcentre.weather.ui.weather.components.GenericDialog
 import com.techdroidcentre.weather.ui.weather.components.WeatherUnitsDialog
+import com.techdroidcentre.weather.util.getLocationName
 
 @Composable
 fun WeatherScreen(
@@ -56,6 +57,14 @@ fun WeatherScreen(
     event: (WeatherScreenEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LocalContext.current.getLocationName(
+        latitude = uiState.location.latitude.toDouble(),
+        longitude = uiState.location.longitude.toDouble()
+    ) { address ->
+        val locationName = address.locality
+        event(WeatherScreenEvent.UpdateLocationName(locationName))
+    }
+
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -66,7 +75,7 @@ fun WeatherScreen(
         ) {
             item {
                 uiState.weather?.currentWeather?.let { currentWeather->
-                    CurrentWeatherCard(currentWeather = currentWeather)
+                    CurrentWeatherCard(currentWeather = currentWeather, locationName = uiState.locationName)
                 }
             }
             item {
@@ -124,6 +133,7 @@ fun WeatherScreen(
 @Composable
 fun CurrentWeatherCard(
     currentWeather: CurrentWeather,
+    locationName: String,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -134,7 +144,7 @@ fun CurrentWeatherCard(
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             Text(
-                text = "Nairobi",
+                text = locationName,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )

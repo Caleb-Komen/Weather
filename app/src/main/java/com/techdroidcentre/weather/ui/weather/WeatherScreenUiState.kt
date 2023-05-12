@@ -14,4 +14,5 @@ data class WeatherScreenUiState(
     val units: String = "",
     val isLoading: Boolean = false,
     val weatherUnitsDialogState: UIComponentState = UIComponentState.Hide,
+    val locationName: String = ""
 )

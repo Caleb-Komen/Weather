@@ -60,6 +60,12 @@ class WeatherScreenViewModel @Inject constructor(
             }
 
             WeatherScreenEvent.RemoveHeadFromQueue -> removeHeadMessage()
+
+            is WeatherScreenEvent.UpdateLocationName -> {
+                _uiState.update {
+                    it.copy(locationName = event.locatioName)
+                }
+            }
         }
     }
 
